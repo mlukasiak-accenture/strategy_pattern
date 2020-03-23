@@ -1,15 +1,26 @@
 package com.accenture.workshop.strategy.dogs;
 
+import com.accenture.workshop.strategy.dogs.barking.IBarkingBehaviour;
+import com.accenture.workshop.strategy.dogs.petting.IPettingBehaviour;
+import com.accenture.workshop.strategy.dogs.running.IRunningBehaviour;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 
-@Data
+
 @AllArgsConstructor
-public abstract class Dog {
+public class Dog {
+    private IBarkingBehaviour barkingBehaviour;
+    private IRunningBehaviour runningBehaviour;
+    private IPettingBehaviour pettingBehaviour;
 
-    public abstract void bark();
+    public final void bark() {
+        barkingBehaviour.bark();
+    };
 
-    public abstract void run();
+    public final void run() {
+        runningBehaviour.run();
+    }
 
-    public abstract void pet();
+    public final void pet() {
+        pettingBehaviour.pet();
+    }
 }

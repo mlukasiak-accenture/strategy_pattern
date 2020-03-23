@@ -1,19 +1,12 @@
 package com.accenture.workshop.strategy.dogs;
 
+import com.accenture.workshop.strategy.dogs.barking.HowlingBarkingBehaviour;
+import com.accenture.workshop.strategy.dogs.running.FastRunningBehaviour;
+
 public class Wolf extends Dog {
 
-    @Override
-    public void bark() {
-        System.out.println("... hauuuuuuuuuuuuuuuuuuuuuu");
+    public Wolf() {
+        super(new HowlingBarkingBehaviour(), new FastRunningBehaviour(), () -> System.out.println("Don't even try..."));
     }
 
-    @Override
-    public void run() {
-        System.out.println("Try to catch me.");
-    }
-
-    @Override
-    public void pet() {
-        System.out.println("Bite me ...");
-    }
 }
