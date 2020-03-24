@@ -1,7 +1,7 @@
 package com.accenture.workshop.strategy.discounts.calculation.strategy.retrieval;
 
 import com.accenture.workshop.strategy.discounts.DiscountCalculationMethod;
-import com.accenture.workshop.strategy.discounts.calculation.DiscountModel;
+import com.accenture.workshop.strategy.discounts.calculation.model.DiscountModel;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;

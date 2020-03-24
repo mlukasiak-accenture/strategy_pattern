@@ -1,4 +1,4 @@
-package com.accenture.workshop.strategy.discounts.calculation;
+package com.accenture.workshop.strategy.discounts.calculation.model;
 
 import java.math.BigDecimal;
 import lombok.Builder;

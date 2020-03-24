@@ -1,6 +1,6 @@
 package com.accenture.workshop.strategy.discounts;
 
-import com.accenture.workshop.strategy.discounts.calculation.DiscountModel;
+import com.accenture.workshop.strategy.discounts.calculation.model.DiscountModel;
 import com.accenture.workshop.strategy.discounts.calculation.strategy.discount.DiscountStrategyFactory;
 import com.accenture.workshop.strategy.discounts.calculation.strategy.discount.IDiscountStrategy;
 import java.math.BigDecimal;

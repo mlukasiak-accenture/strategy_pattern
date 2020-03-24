@@ -2,7 +2,7 @@ package com.accenture.workshop.strategy.discounts.calculation.strategy.discount;
 
 import com.accenture.workshop.strategy.discounts.DiscountCalculationMethod;
 import com.accenture.workshop.strategy.discounts.ValueKeys;
-import com.accenture.workshop.strategy.discounts.calculation.DiscountModel;
+import com.accenture.workshop.strategy.discounts.calculation.model.DiscountModel;
 import com.accenture.workshop.strategy.discounts.calculation.strategy.retrieval.IDiscountRetrievalStrategy;
 import java.math.BigDecimal;
 import java.util.Map;
