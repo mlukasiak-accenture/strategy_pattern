@@ -1,80 +1,41 @@
 package com.accenture.workshop.strategy.discounts;
 
+import com.accenture.workshop.strategy.discounts.calculation.DiscountModel;
+import com.accenture.workshop.strategy.discounts.calculation.strategy.discount.DiscountStrategyFactory;
+import com.accenture.workshop.strategy.discounts.calculation.strategy.discount.IDiscountStrategy;
 import java.math.BigDecimal;
-import java.util.HashMap;
 import java.util.Map;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
 @Data
+@RequiredArgsConstructor
 public class DiscountHelper {
-    private boolean staffDiscount;
-    private BigDecimal staffDiscountAmount;
-    private BigDecimal discountAmount;
-    private BigDecimal staffDiscountPercent;
-    private BigDecimal discountPercent;
-    private BigDecimal fullItemPrice;
-    private boolean simAutoDiscountApplicable;
-
-    private BigDecimal valueForCalc = null;
-
+    private final Map<String, Object> scope;
+    private final DiscountStrategyFactory discountStrategyFactory;
     private DiscountCalculationMethod calculationMethod;
-    private Map<String, Object> transactionScope = new HashMap<>();
+    private IDiscountStrategy discountStrategy;
 
-    public BigDecimal prepareDiscountValue(BigDecimal currentPrice, BigDecimal fullPrice, WizardModel wizardModel) {
-        Boolean isDiscountRetrieved = (Boolean) transactionScope.get(ValueKeys.WIZARD_IS_DISCOUNT_RETRIEVED);
-        // calc method
-        if (calculationMethod == DiscountCalculationMethod.NONE_Surcharge) {
-            valueForCalc = (BigDecimal) transactionScope.get(ValueKeys.ENTERED_DISCOUNT_AMOUNT);
-            return valueForCalc.negate();
+    public BigDecimal calculateDiscount(Map<String, Object> scope) {
+        DiscountModel discountModel = getDiscountModel(scope);
+        BigDecimal discount = discountStrategy.discount(scope);
+        if (isPriceAfterDiscountBelowZero(discountModel.getCurrentPrice(), discount)) {
+            discount = discountModel.getCurrentPrice();
         }
-
-        // calc method
-        if (calculationMethod.isDollarAmountBased()) {
-            if (!calculationMethod.isUsingPromptAlways()) {
-                valueForCalc = isStaffDiscount() ? getStaffDiscountAmount() : getDiscountAmount();
-            } else {
-                valueForCalc = (BigDecimal) transactionScope.get(ValueKeys.ENTERED_DISCOUNT_AMOUNT);
-                if (isSimAutoDiscountApplicable() || isPriceAfterDiscountBelowZero(currentPrice)) {
-                    valueForCalc = currentPrice;
-                }
-            }
-            return valueForCalc;
-        }
-
-        // calc method
-        if (isDiscountRetrieved != null && isDiscountRetrieved && "MAINDEVICE".equalsIgnoreCase((String) transactionScope.get(ValueKeys.WIZARD_CURRENT_DISCOUNTABLE_ITEM_TYPE))) {
-            valueForCalc = new BigDecimal(wizardModel.getWizardProductDiscount());
-            transactionScope.put(ValueKeys.WIZARD_IS_DISCOUNT_RETRIEVED, false);
-            return valueForCalc;
-        }
-
-        // calc method
-        if (calculationMethod.isPercentageBased()) {
-            if ((!calculationMethod.isUsingPromptAlways())) {
-                valueForCalc = isStaffDiscount() ? getStaffDiscountPercent() : getDiscountPercent();
-            } else {
-                valueForCalc = (BigDecimal) transactionScope.get(ValueKeys.ENTERED_DISCOUNT_PERCENT);
-            }
-            if (isStaffDiscount() && !isFullPriceNull() && !isFullPriceZero()) {
-                return fullPrice.multiply(valueForCalc);
-            }
-            return currentPrice.multiply(valueForCalc);
-        }
-
-        //def
-        return BigDecimal.valueOf(0);
+        return discount;
     }
 
-    private boolean isPriceAfterDiscountBelowZero(BigDecimal currentPrice) {
-        return currentPrice.subtract(valueForCalc).compareTo(BigDecimal.ZERO) < 0;
+    public void setCalculationMethod(DiscountCalculationMethod discountCalculationMethod) {
+        this.calculationMethod = discountCalculationMethod;
+        this.discountStrategy = discountStrategyFactory.getStrategy(calculationMethod, getDiscountModel(scope));
     }
 
-    private boolean isFullPriceZero() {
-        return 0 == getFullItemPrice().compareTo(BigDecimal.ZERO);
+    private DiscountModel getDiscountModel(Map<String, Object> scope) {
+        return (DiscountModel) scope.get(ValueKeys.DISCOUNT_MODEL);
     }
 
-    private boolean isFullPriceNull() {
-        return null == getFullItemPrice();
+    private boolean isPriceAfterDiscountBelowZero(BigDecimal currentPrice, BigDecimal discount) {
+        return currentPrice.subtract(discount).compareTo(BigDecimal.ZERO) < 0;
     }
 
 }
