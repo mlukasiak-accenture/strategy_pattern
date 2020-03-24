@@ -20,8 +20,7 @@ public class DiscountHelper {
     private DiscountCalculationMethod calculationMethod;
     private Map<String, Object> transactionScope = new HashMap<>();
 
-    public BigDecimal prepareDiscountValue(BigDecimal currentPrice, BigDecimal fullPrice, WizardModel wizardModel) {
-        Boolean isDiscountRetrieved = (Boolean) transactionScope.get(ValueKeys.WIZARD_IS_DISCOUNT_RETRIEVED);
+    public BigDecimal prepareDiscountValue(BigDecimal currentPrice, BigDecimal fullPrice) {
         // calc method
         if (calculationMethod == DiscountCalculationMethod.NONE_Surcharge) {
             valueForCalc = (BigDecimal) transactionScope.get(ValueKeys.ENTERED_DISCOUNT_AMOUNT);
@@ -38,13 +37,6 @@ public class DiscountHelper {
                     valueForCalc = currentPrice;
                 }
             }
-            return valueForCalc;
-        }
-
-        // calc method
-        if (isDiscountRetrieved != null && isDiscountRetrieved && "MAINDEVICE".equalsIgnoreCase((String) transactionScope.get(ValueKeys.WIZARD_CURRENT_DISCOUNTABLE_ITEM_TYPE))) {
-            valueForCalc = new BigDecimal(wizardModel.getWizardProductDiscount());
-            transactionScope.put(ValueKeys.WIZARD_IS_DISCOUNT_RETRIEVED, false);
             return valueForCalc;
         }
 

@@ -8,6 +8,6 @@ public class DiscountCalculationMethod {
     boolean usingPromptAlways;
     boolean percentageBased;
 
-    public static DiscountCalculationMethod NONE_Surcharge = new DiscountCalculationMethod();
+    public static DiscountCalculationMethod NONE_Surcharge = new DiscountCalculationMethod(true, false, false);
 
 }
